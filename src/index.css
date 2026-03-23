@@ -1,0 +1,234 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  /* Brand Colors - Matching Android */
+  --green-primary: #2e7d32;
+  --green-light: #4caf50;
+  --green-bg: #f1f8e9;
+  --blue-primary: #1565c0;
+  --blue-light: #1e88e5;
+  --blue-bg: #e3f2fd;
+  --purple-primary: #7b1fa2;
+  --purple-bg: #f3e5f5;
+  --orange-primary: #f57c00;
+  --orange-bg: #fff3e0;
+  --red-primary: #d32f2f;
+  
+  /* UI Colors */
+  --bg-white: #ffffff;
+  --bg-gradient-start: #ffffff;
+  --bg-gradient-end: #e8f5e9; /* Green gradient as seen in Login/Dashboard */
+  --text-main: #212121;
+  --text-secondary: #757575;
+  --border-light: #e0e0e0;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  
+  /* Typography */
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  /* Spacing */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--bg-white);
+  color: var(--text-main);
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Global Layout Components */
+.app-container {
+  width: 100%;
+  max-width: 1280px; /* Standard wide-screen max width */
+  margin: 0 auto;
+  min-height: 100vh;
+  background: white;
+  position: relative;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: 24px;
+}
+
+/* Typography Helpers */
+h1, h2, h3, h4, h5 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.text-headline {
+  font-size: 32px; /* Larger for web view */
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 768px) {
+  .text-headline {
+    font-size: 24px;
+  }
+}
+
+.text-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.text-body {
+  font-size: 16px;
+  color: var(--text-main);
+}
+
+.text-secondary {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.text-bold {
+  font-weight: 700;
+}
+
+/* Card Style */
+.vq-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Responsive Grids */
+.vq-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+@media (max-width: 600px) {
+  .vq-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Button Styles */
+.vq-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  width: 100%;
+  max-width: 320px; /* Don't stretch too much on web */
+  margin: 0 auto;
+}
+
+.btn-primary {
+  background: var(--green-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #1b5e20;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-blue {
+  background: var(--blue-primary);
+  color: white;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+}
+
+/* Input Styles */
+.vq-input-group {
+  margin-bottom: 20px;
+  max-width: 480px; /* Constrained for web view readability */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.vq-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-main);
+  text-align: left;
+}
+
+.vq-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  font-size: 15px;
+  transition: border-color 0.2s;
+  background: #fcfcfc;
+}
+
+.vq-input:focus {
+  outline: none;
+  border-color: var(--green-primary);
+  background: #fff;
+}
+
+/* Utility Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+/* Responsive Background */
+body {
+  background-color: #f8fafc;
+}
+
+@media (max-width: 768px) {
+  body {
+    background-color: white;
+  }
+}
+
+

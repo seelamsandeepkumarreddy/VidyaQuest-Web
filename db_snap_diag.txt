@@ -1,0 +1,26 @@
+=== SUBJECTS COUNTS BY GRADE ===
+Grade: '10', Count: 2
+Grade: '8', Count: 6
+Grade: '9', Count: 2
+
+=== SUBJECTS LIST ===
+ID: 9, Grade: '10', Title: Mathematics
+ID: 10, Grade: '10', Title: Science
+ID: 3, Grade: '8', Title: English
+ID: 5, Grade: '8', Title: Hindi
+ID: 1, Grade: '8', Title: Mathematics
+ID: 2, Grade: '8', Title: Science
+ID: 4, Grade: '8', Title: Social Studies
+ID: 6, Grade: '8', Title: Telugu
+ID: 7, Grade: '9', Title: Mathematics
+ID: 8, Grade: '9', Title: Science
+
+=== RECENT STUDENTS ===
+User ID: VQ-2026020, Grade: '10'
+User ID: VQ-2026019, Grade: '10'
+User ID: VQ-2026018, Grade: '8'
+User ID: VQ-2026017, Grade: '8'
+User ID: VQ-2026016, Grade: '8'
+
+=== RECENT USERS ===
+Error: (1054, "Unknown column 'grade' in 'field list'")
