@@ -100,7 +100,21 @@ export const sessionManager = {
     return parseInt(localStorage.getItem(`daily_xp_${dateKey}`) || '0');
   },
 
+  // Server streak (synced from backend progress API)
+  setServerStreak: (count) => {
+    localStorage.setItem('vq_server_streak', count.toString());
+  },
+
+  getServerStreak: () => {
+    return parseInt(localStorage.getItem('vq_server_streak') || '0');
+  },
+
   getStreakCount: () => {
+    // Prefer server-calculated streak if available
+    const serverStreak = sessionManager.getServerStreak();
+    if (serverStreak > 0) return serverStreak;
+
+    // Fallback to local XP-based calculation
     let count = 0;
     let offset = 0;
 
@@ -120,5 +134,16 @@ export const sessionManager = {
     }
 
     return count;
+  },
+
+  // Notification read-tracking
+  markNotificationsRead: (ids) => {
+    const readSet = JSON.parse(localStorage.getItem('vq_read_notifications') || '[]');
+    const updated = [...new Set([...readSet, ...ids])];
+    localStorage.setItem('vq_read_notifications', JSON.stringify(updated));
+  },
+
+  getReadNotificationIds: () => {
+    return JSON.parse(localStorage.getItem('vq_read_notifications') || '[]');
   }
 };

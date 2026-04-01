@@ -26,6 +26,11 @@ const DashboardPage = () => {
         
         setProgress(progData);
         setChallenge(challengeData);
+
+        // Store server-calculated streak for use across the app
+        if (progData && progData.streak !== undefined) {
+          sessionManager.setServerStreak(progData.streak);
+        }
         
         // Calculate rank from leaderboard
         if (leaderboardData && Array.isArray(leaderboardData)) {
@@ -239,7 +244,7 @@ const DashboardPage = () => {
         }
 
         .profile-card-new {
-          background: linear-gradient(135deg, white 0%, #f1f8e9 100%);
+          background: linear-gradient(135deg, var(--bg-white) 0%, var(--green-bg) 100%);
           border: none;
           box-shadow: var(--shadow-md);
         }
@@ -295,7 +300,7 @@ const DashboardPage = () => {
 
         .streak-display {
           text-align: right;
-          background: white;
+          background: var(--bg-white);
           padding: 12px 20px;
           border-radius: 20px;
           box-shadow: var(--shadow-sm);
@@ -313,7 +318,7 @@ const DashboardPage = () => {
         }
 
         .progress-section {
-          background: white;
+          background: var(--bg-white);
           padding: 24px;
           border-radius: 20px;
           box-shadow: var(--shadow-sm);
@@ -339,7 +344,7 @@ const DashboardPage = () => {
 
         .progress-bar-container {
           height: 12px;
-          background: #f1f5f9;
+          background: var(--bg-app);
           border-radius: 6px;
           overflow: hidden;
         }
@@ -358,8 +363,8 @@ const DashboardPage = () => {
         }
 
         .challenge-card {
-          border: 2px solid #FFE0B2;
-          background: #FFF8E1;
+          border: 2px solid var(--orange-primary);
+          background: var(--orange-bg);
           display: flex;
           align-items: center;
           gap: 20px;
@@ -374,7 +379,8 @@ const DashboardPage = () => {
         .challenge-icon-box {
           width: 56px;
           height: 56px;
-          background: #FFE0B2;
+          background: var(--orange-primary);
+          color: white;
           border-radius: 16px;
           display: flex;
           align-items: center;
@@ -485,7 +491,7 @@ const DashboardPage = () => {
         .subject-icon-box {
           width: 64px;
           height: 64px;
-          background: #f1f5f9;
+          background: var(--bg-app);
           border-radius: 16px;
           display: flex;
           align-items: center;
@@ -517,7 +523,7 @@ const DashboardPage = () => {
         .mini-bar {
           flex: 1;
           height: 6px;
-          background: #f1f5f9;
+          background: var(--bg-app);
           border-radius: 3px;
         }
 
@@ -554,7 +560,7 @@ const DashboardPage = () => {
           align-items: center;
           justify-content: center;
           font-size: 22px;
-          border: 1px solid rgba(0,0,0,0.05);
+          border: 1px solid var(--border-light);
         }
 
         .ach-name {

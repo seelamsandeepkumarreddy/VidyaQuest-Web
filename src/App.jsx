@@ -25,6 +25,7 @@ import NotificationsPage from './pages/student/NotificationsPage';
 import ProfilePage from './pages/student/ProfilePage';
 import ChatbotPage from './pages/student/ChatbotPage';
 import DailyChallengePage from './pages/student/DailyChallengePage';
+import SpeechTrainingPage from './pages/student/SpeechTrainingPage';
 
 // Teacher Module Components
 import TeacherLayout from './components/teacher/TeacherLayout';
@@ -73,6 +74,7 @@ function App() {
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/chatbot" element={<ChatbotPage />} />
+        <Route path="/speech-training" element={<SpeechTrainingPage />} />
       </Route>
 
       {/* Teacher Protected Routes */}

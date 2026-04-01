@@ -29,7 +29,7 @@ const StudentLayout = () => {
         .layout-wrapper {
           display: flex;
           min-height: 100vh;
-          background: #f8fafc;
+          background: var(--bg-app);
         }
 
         .content-area {

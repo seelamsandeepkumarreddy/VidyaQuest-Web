@@ -156,30 +156,35 @@ const QuizPage = () => {
       
       const finalPercentage = Math.round((totalScore / questions.length) * 100) || 0;
       const xpToEarn = totalScore * 20;
-      
-      await api.saveProgress({
-        user_id: userId,
-        grade: state?.grade || sessionManager.getGrade() || "8",
-        subject: state?.subject || sessionManager.getSubject() || 'General',
-        chapter: state?.chapterName || sessionManager.getChapterName() || 'Chapter',
-        score: finalPercentage,
-        xp: xpToEarn,
-        badge: finalPercentage === 100 ? 'Gold' : (finalPercentage >= 80 ? 'Silver' : 'Bronze')
-      });
+
+      const finalAnswers = isAnswered ? [...userAnswers, {
+          question: questions[currentIdx].text,
+          selected: selectedOption,
+          correct: questions[currentIdx].correct,
+          isCorrect: selectedOption === questions[currentIdx].correct,
+          review: questions[currentIdx].review,
+          options: questions[currentIdx].options
+      }] : userAnswers;
+
+      // Only save progress if minimum 5 correct answers (matching Android requirement)
+      if (totalScore >= 5) {
+        await api.saveProgress({
+          user_id: userId,
+          grade: state?.grade || sessionManager.getGrade() || "8",
+          subject: state?.subject || sessionManager.getSubject() || 'General',
+          chapter: state?.chapterName || sessionManager.getChapterName() || 'Chapter',
+          score: finalPercentage,
+          xp: xpToEarn,
+          badge: finalPercentage === 100 ? 'Gold' : (finalPercentage >= 80 ? 'Silver' : 'Bronze')
+        });
+      }
       
       setQuizResults({
         score: totalScore,
         total: questions.length,
         accuracy: finalPercentage,
         xpEarned: xpToEarn,
-        userAnswers: isAnswered ? [...userAnswers, {
-            question: questions[currentIdx].text,
-            selected: selectedOption,
-            correct: questions[currentIdx].correct,
-            isCorrect: selectedOption === questions[currentIdx].correct,
-            review: questions[currentIdx].review,
-            options: questions[currentIdx].options
-        }] : userAnswers
+        userAnswers: finalAnswers
       });
       
     } catch (err) {
@@ -281,6 +286,15 @@ const QuizPage = () => {
               })}
           </div>
 
+          {quizResults.score < 5 && (
+            <div className="min-score-warning vq-card animate-fade" style={{ marginBottom: '24px', background: '#fef2f2', border: '1px solid #fecaca', display: 'flex', gap: '16px', alignItems: 'center' }}>
+              <span style={{ fontSize: '28px' }}>⚠️</span>
+              <p style={{ margin: 0, color: '#dc2626', fontWeight: 600, fontSize: '15px', lineHeight: 1.5 }}>
+                You need at least 5 correct answers to save your progress and earn rewards. Please try again! 😊
+              </p>
+            </div>
+          )}
+
           <div className="results-cta-actions">
               <button 
                 className="btn-web-outline btn-lg-enhanced" 
@@ -288,12 +302,14 @@ const QuizPage = () => {
               >
                 ⚡ Retry Quiz
               </button>
-              <button 
-                className="btn-web-primary btn-lg-enhanced" 
-                onClick={() => navigate('/rewards', { state: { justEarned: quizResults.xpEarned } })}
-              >
-                Claim Rewards & Continue
-              </button>
+              {quizResults.score >= 5 && (
+                <button 
+                  className="btn-web-primary btn-lg-enhanced" 
+                  onClick={() => navigate('/rewards', { state: { justEarned: quizResults.xpEarned } })}
+                >
+                  Claim Rewards & Continue
+                </button>
+              )}
           </div>
         </div>
 

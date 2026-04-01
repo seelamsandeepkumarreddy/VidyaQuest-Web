@@ -37,7 +37,7 @@ const StudentHeader = () => {
       <style>{`
         .student-header {
           height: 80px;
-          background: white;
+          background: var(--bg-white);
           border-bottom: 1px solid var(--border-light);
           padding: 0 32px;
           display: flex;
@@ -75,7 +75,7 @@ const StudentHeader = () => {
         .search-bar {
           display: flex;
           align-items: center;
-          background: #f1f5f9;
+          background: var(--bg-app);
           padding: 10px 16px;
           border-radius: 12px;
           gap: 12px;
@@ -84,7 +84,7 @@ const StudentHeader = () => {
         }
 
         .search-bar:focus-within {
-          background: white;
+          background: var(--bg-white);
           box-shadow: 0 0 0 2px var(--green-primary);
         }
 
@@ -106,7 +106,7 @@ const StudentHeader = () => {
         .action-item {
           width: 44px;
           height: 44px;
-          background: #f8fafc;
+          background: var(--bg-app);
           border-radius: 12px;
           display: flex;
           align-items: center;
@@ -140,7 +140,7 @@ const StudentHeader = () => {
           display: flex;
           align-items: center;
           justify-content: center;
-          border: 2px solid white;
+          border: 2px solid var(--bg-white);
         }
 
         .user-profile-header {

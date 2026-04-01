@@ -16,8 +16,9 @@
   
   /* UI Colors */
   --bg-white: #ffffff;
+  --bg-app: #f8fafc;
   --bg-gradient-start: #ffffff;
-  --bg-gradient-end: #e8f5e9; /* Green gradient as seen in Login/Dashboard */
+  --bg-gradient-end: #e8f5e9;
   --text-main: #212121;
   --text-secondary: #757575;
   --border-light: #e0e0e0;
@@ -35,6 +36,25 @@
   --radius-xl: 32px;
 }
 
+[data-theme='dark'] {
+  --bg-white: #1e1e1e;
+  --bg-app: #121212;
+  --bg-gradient-start: #121212;
+  --bg-gradient-end: #1b3d1b;
+  --text-main: #f5f5f5;
+  --text-secondary: #b0b0b0;
+  --border-light: #333333;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.5);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.7);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.8);
+
+  /* Adjust background variations for dark mode */
+  --green-bg: #1b3d1b;
+  --blue-bg: #0d2a4a;
+  --purple-bg: #2a0d2a;
+  --orange-bg: #3d2a0d;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -44,7 +64,7 @@
 
 body {
   font-family: var(--font-family);
-  background: var(--bg-white);
+  background: var(--bg-app);
   color: var(--text-main);
   line-height: 1.5;
   overflow-x: hidden;
@@ -222,12 +242,12 @@ h1, h2, h3, h4, h5 {
 
 /* Responsive Background */
 body {
-  background-color: #f8fafc;
+  background-color: var(--bg-app);
 }
 
 @media (max-width: 768px) {
   body {
-    background-color: white;
+    background-color: var(--bg-white);
   }
 }
 

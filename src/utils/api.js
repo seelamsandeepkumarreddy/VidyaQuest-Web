@@ -131,4 +131,20 @@ export const api = {
     method: 'POST',
     body: JSON.stringify(data),
   }),
+
+  // Grade Analytics (Teacher)
+  getGradeAnalytics: (grade) => request(`/analytics/grade/${grade}`),
+
+  // Admin Create User
+  adminCreateUser: (data) => request('/admin/create-user', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
+
+  // Speech Training
+  saveSpeechProgress: (data) => request('/speech/save', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
+  getSpeechStats: (userId) => request(`/speech/stats/${userId}`),
 };

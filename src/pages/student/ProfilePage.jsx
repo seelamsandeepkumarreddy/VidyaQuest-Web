@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../utils/api';
 import { sessionManager } from '../../utils/session';
+import { useTheme } from '../../utils/ThemeContext';
 import BottomNav from '../../components/BottomNav';
 
 const ProfilePage = () => {
@@ -15,6 +16,7 @@ const ProfilePage = () => {
   const schoolName = user?.school_name || 'Quest Academy';
   const grade = user?.grade || '8';
   const streakCount = sessionManager.getStreakCount();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const fetchProgress = async () => {
@@ -179,11 +181,15 @@ const ProfilePage = () => {
                 </label>
               </div>
 
-              <div className="settings-toggle-card">
+              <div className="settings-toggle-card" onClick={toggleTheme}>
                 <div className="action-icon-box moon-icon">🌙</div>
                 <div className="action-label">Dark Interface</div>
                 <label className="toggle-switch">
-                  <input type="checkbox" />
+                  <input 
+                    type="checkbox" 
+                    checked={theme === 'dark'} 
+                    onChange={toggleTheme}
+                  />
                   <span className="slider"></span>
                 </label>
               </div>
@@ -205,8 +211,8 @@ const ProfilePage = () => {
         }
 
         .back-button-circle {
-          background: white;
-          border: 1px solid #e2e8h0;
+          background: var(--bg-white);
+          border: 1px solid var(--border-light);
           border-radius: 50%;
           width: 48px;
           height: 48px;
@@ -234,7 +240,7 @@ const ProfilePage = () => {
           padding: 48px !important;
           text-align: center;
           margin-bottom: 24px;
-          background: linear-gradient(to bottom, white 0%, #f8fafc 100%);
+          background: linear-gradient(to bottom, var(--bg-white) 0%, var(--bg-app) 100%);
         }
 
         .profile-avatar-large {
@@ -279,7 +285,7 @@ const ProfilePage = () => {
           justify-content: center;
           gap: 48px;
           margin-top: 40px;
-          border-top: 1px solid #f1f5f9;
+          border-top: 1px solid var(--border-light);
           padding-top: 32px;
         }
 
@@ -352,7 +358,7 @@ const ProfilePage = () => {
 
         .main-xp-track {
           height: 12px;
-          background: #f1f5f9;
+          background: var(--bg-app);
           border-radius: 6px;
           overflow: hidden;
         }
@@ -431,11 +437,11 @@ const ProfilePage = () => {
         }
 
         .settings-list-enhanced {
-          background: white;
+          background: var(--bg-white);
           border-radius: 32px;
           padding: 32px;
           box-shadow: 0 10px 30px rgba(0,0,0,0.02);
-          border: 1px solid #f1f5f9;
+          border: 1px solid var(--border-light);
         }
 
         .settings-section-title {
@@ -456,11 +462,11 @@ const ProfilePage = () => {
           margin-bottom: 12px;
           transition: all 0.2s ease;
           cursor: pointer;
-          background: #f8fafc;
+          background: var(--bg-app);
         }
 
         .settings-action-card:hover {
-          background: white;
+          background: var(--bg-white);
           box-shadow: 0 4px 12px rgba(0,0,0,0.05);
           transform: translateX(4px);
         }
@@ -527,7 +533,7 @@ const ProfilePage = () => {
           width: 18px;
           left: 3px;
           bottom: 3px;
-          background-color: white;
+          background-color: var(--bg-white);
           transition: .4s;
           border-radius: 50%;
         }

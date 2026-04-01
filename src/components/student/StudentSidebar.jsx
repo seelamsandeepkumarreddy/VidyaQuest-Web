@@ -10,6 +10,7 @@ const StudentSidebar = () => {
   const menuItems = [
     { name: 'Dashboard', icon: '🏠', path: '/dashboard' },
     { name: 'My Subjects', icon: '📚', path: '/subjects' },
+    { name: 'Speech Training', icon: '🗣️', path: '/speech-training' },
     { name: 'Leaderboard', icon: '⚡', path: '/leaderboard' },
     { name: 'Rewards', icon: '🏆', path: '/rewards' },
     { name: 'Reports', icon: '📊', path: '/reports' },
@@ -66,7 +67,7 @@ const StudentSidebar = () => {
         .student-sidebar {
           width: 280px;
           height: 100vh;
-          background: white;
+          background: var(--bg-white);
           border-right: 1px solid var(--border-light);
           display: flex;
           flex-direction: column;
@@ -190,8 +191,8 @@ const StudentSidebar = () => {
           gap: 12px;
           padding: 12px 20px;
           border-radius: 12px;
-          border: 1px solid #fee2e2;
-          background: #fff5f5;
+          border: 1px solid var(--border-light);
+          background: var(--bg-white);
           color: var(--red-primary);
           font-weight: 700;
           cursor: pointer;

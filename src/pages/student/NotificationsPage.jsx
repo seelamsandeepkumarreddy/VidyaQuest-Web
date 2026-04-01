@@ -6,6 +6,7 @@ import BottomNav from '../../components/BottomNav';
 const NotificationsPage = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [readIds, setReadIds] = useState(sessionManager.getReadNotificationIds());
   
   const userId = sessionManager.getUserId();
   const grade = sessionManager.getGrade();
@@ -15,6 +16,15 @@ const NotificationsPage = () => {
       try {
         const data = await api.getAnnouncements(grade, userId, 'student');
         setAnnouncements(data);
+        
+        // Mark all as read after viewing (with a slight delay for UX)
+        setTimeout(() => {
+          if (Array.isArray(data) && data.length > 0) {
+            const ids = data.map(a => a.id).filter(Boolean);
+            sessionManager.markNotificationsRead(ids);
+            setReadIds(sessionManager.getReadNotificationIds());
+          }
+        }, 2000);
       } catch (err) {
         console.error('Failed to fetch notifications:', err);
       } finally {
@@ -23,6 +33,9 @@ const NotificationsPage = () => {
     };
     fetchAnnouncements();
   }, [userId, grade]);
+
+  const isUnread = (id) => !readIds.includes(id);
+  const unreadCount = announcements.filter(a => isUnread(a.id)).length;
 
   return (
     <div className="notifications-wrapper">
@@ -35,7 +48,12 @@ const NotificationsPage = () => {
             ←
           </button>
           <div>
-            <h2 className="text-headline" style={{ margin: 0 }}>Announcements</h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <h2 className="text-headline" style={{ margin: 0 }}>Announcements</h2>
+              {unreadCount > 0 && (
+                <span className="unread-count-badge">{unreadCount} new</span>
+              )}
+            </div>
             <p className="text-secondary" style={{ marginTop: '4px' }}>Stay updated with the latest news from your school</p>
           </div>
         </div>
@@ -49,24 +67,28 @@ const NotificationsPage = () => {
           </div>
         ) : (
           <div className="notifications-list">
-            {announcements.length > 0 ? announcements.map((ann, i) => (
-              <div 
-                key={ann.id} 
-                className="vq-card animate-fade notification-card" 
-                style={{ animationDelay: `${i * 0.05}s` }}
-              >
+            {announcements.length > 0 ? announcements.map((ann, i) => {
+              const unread = isUnread(ann.id);
+              return (
+                <div 
+                  key={ann.id} 
+                  className={`vq-card animate-fade notification-card ${unread ? 'notification-unread' : ''}`}
+                  style={{ animationDelay: `${i * 0.05}s` }}
+                >
+                {unread && <div className="unread-dot"></div>}
                 <div className="notification-icon-box">
                   📢
                 </div>
                 <div className="notification-content">
                   <div className="notification-head">
                     <h4 className="notification-title">{ann.title}</h4>
-                    <span className="notification-time">Recent Update</span>
+                    <span className="notification-time">{unread ? 'New' : 'Read'}</span>
                   </div>
                   <p className="notification-message">{ann.message}</p>
                 </div>
               </div>
-            )) : (
+              );
+            }) : (
               <div className="vq-card empty-notifications-state animate-fade">
                 <div className="empty-icon-large">📭</div>
                 <h3 className="empty-title">All caught up!</h3>
@@ -85,7 +107,7 @@ const NotificationsPage = () => {
         .back-button-circle {
           background: white;
           border: 1px solid #e2e8f0;
-          borderRadius: 50%;
+          border-radius: 50%;
           width: 48px;
           height: 48px;
           display: flex;
@@ -101,6 +123,21 @@ const NotificationsPage = () => {
           transform: translateX(-4px);
           border-color: var(--green-primary);
           color: var(--green-primary);
+        }
+
+        .unread-count-badge {
+          background: #ef4444;
+          color: white;
+          padding: 4px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 800;
+          animation: pulse-badge 2s infinite;
+        }
+
+        @keyframes pulse-badge {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
         }
 
         .notifications-container-layout {
@@ -120,6 +157,28 @@ const NotificationsPage = () => {
           padding: 40px !important;
           align-items: flex-start;
           transition: transform 0.2s ease;
+          position: relative;
+        }
+
+        .notification-unread {
+          border-left: 4px solid #3b82f6 !important;
+          background: #f8faff !important;
+        }
+
+        .unread-dot {
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          width: 10px;
+          height: 10px;
+          background: #3b82f6;
+          border-radius: 50%;
+          animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.5; transform: scale(1.3); }
         }
 
         .notification-card:hover {
@@ -167,6 +226,11 @@ const NotificationsPage = () => {
           padding: 4px 12px;
           border-radius: 12px;
           text-transform: uppercase;
+        }
+
+        .notification-unread .notification-time {
+          background: #dbeafe;
+          color: #1d4ed8;
         }
 
         .notification-message {

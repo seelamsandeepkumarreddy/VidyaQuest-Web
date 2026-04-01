@@ -7,6 +7,15 @@ const AdminUsers = () => {
   const [roleFilter, setRoleFilter] = useState('all');
   const [selectedUserDetail, setSelectedUserDetail] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Create user form state
+  const [createForm, setCreateForm] = useState({
+    name: '', email: '', password: '', role: 'Student', details: '', grade: ''
+  });
+  const [createError, setCreateError] = useState('');
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -58,8 +67,56 @@ const AdminUsers = () => {
     }
   };
 
+  // Name validation: filter out digits (matching Android ManageUsersScreen)
+  const handleNameChange = (value) => {
+    const filtered = value.replace(/[0-9]/g, '');
+    setCreateForm({ ...createForm, name: filtered });
+  };
+
+  // Email domain validation (matching Android)
+  const allowedDomains = ['@gmail.com', '@saveetha.com', '@saveetha.ac.in', '@yahoo.com', '@outlook.com'];
+  const isEmailValid = (email) => {
+    if (!email.trim()) return true; // don't mark empty as error
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email) && allowedDomains.some(d => email.toLowerCase().endsWith(d));
+  };
+
+  const handleCreateUser = async () => {
+    if (!createForm.name.trim()) return setCreateError('Name is required');
+    if (!createForm.email.trim() || !isEmailValid(createForm.email)) return setCreateError('Please enter a valid email (gmail, saveetha, yahoo, outlook)');
+    if (!createForm.details.trim()) return setCreateError('Grade/Subject field is required');
+    if (createForm.role === 'Teacher' && !createForm.grade.trim()) return setCreateError('Assigned grade is required for teachers');
+
+    setCreating(true);
+    setCreateError('');
+    try {
+      await api.adminCreateUser({
+        full_name: createForm.name.trim(),
+        email: createForm.email.trim(),
+        password: createForm.password.trim() || undefined,
+        role: createForm.role,
+        grade: createForm.role === 'Student' ? createForm.details.trim() : createForm.grade.trim(),
+        subject_expertise: createForm.role === 'Teacher' ? createForm.details.trim() : undefined
+      });
+      alert('✅ User created successfully!');
+      setShowCreateModal(false);
+      setCreateForm({ name: '', email: '', password: '', role: 'Student', details: '', grade: '' });
+      fetchUsers();
+    } catch (err) {
+      setCreateError(err.message || 'Failed to create user');
+    } finally {
+      setCreating(false);
+    }
+  };
+
   const filteredUsers = Array.isArray(users)
-    ? (roleFilter === 'all' ? users : users.filter(u => u?.role?.toLowerCase() === roleFilter))
+    ? users.filter(u => {
+        const roleMatch = roleFilter === 'all' || u?.role?.toLowerCase() === roleFilter;
+        const searchMatch = !searchQuery || 
+          (u?.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+           u?.email?.toLowerCase().includes(searchQuery.toLowerCase()));
+        return roleMatch && searchMatch;
+      })
     : [];
 
   if (loading) return <div className="loading-container"><div className="spinner"></div></div>;
@@ -68,18 +125,29 @@ const AdminUsers = () => {
     <div className="admin-users-page animate-fade">
       <div className="users-controls vq-card">
          <div className="search-box-admin">
-            <input type="text" placeholder="Search by name or email..." className="admin-search-input" />
+            <input 
+              type="text" 
+              placeholder="Search by name or email..." 
+              className="admin-search-input" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
          </div>
-         <div className="role-pills">
-            {['all', 'student', 'teacher', 'admin'].map(role => (
-              <button
-                key={role}
-                onClick={() => setRoleFilter(role)}
-                className={`role-pill ${roleFilter === role ? 'active' : ''}`}
-              >
-                {role}
-              </button>
-            ))}
+         <div className="controls-right">
+           <div className="role-pills">
+              {['all', 'student', 'teacher', 'admin'].map(role => (
+                <button
+                  key={role}
+                  onClick={() => setRoleFilter(role)}
+                  className={`role-pill ${roleFilter === role ? 'active' : ''}`}
+                >
+                  {role}
+                </button>
+              ))}
+           </div>
+           <button className="add-user-btn" onClick={() => setShowCreateModal(true)}>
+             + Add User
+           </button>
          </div>
       </div>
 
@@ -123,6 +191,7 @@ const AdminUsers = () => {
         </table>
       </div>
 
+      {/* User Detail Modal */}
       {showModal && selectedUserDetail && (
         <div className="modal-overlay-admin animate-fade" onClick={() => setShowModal(false)}>
            <div className="modal-content-admin vq-card" onClick={e => e.stopPropagation()}>
@@ -195,6 +264,121 @@ const AdminUsers = () => {
         </div>
       )}
 
+      {/* Create User Modal */}
+      {showCreateModal && (
+        <div className="modal-overlay-admin animate-fade" onClick={() => setShowCreateModal(false)}>
+          <div className="modal-content-admin vq-card" onClick={e => e.stopPropagation()}>
+            <div className="modal-header-admin" style={{ background: 'var(--green-primary, #2e7d32)' }}>
+              <div className="modal-profile">
+                <div className="modal-avatar" style={{ background: 'rgba(255,255,255,0.2)' }}>+</div>
+                <div>
+                  <h3>Add New User</h3>
+                  <p>Create a student or teacher account</p>
+                </div>
+              </div>
+              <button className="close-btn" onClick={() => setShowCreateModal(false)}>×</button>
+            </div>
+            <div className="modal-body-admin">
+              {createError && (
+                <div style={{ background: '#fef2f2', color: '#dc2626', padding: '12px 16px', borderRadius: '12px', marginBottom: '20px', fontSize: '14px', fontWeight: 600 }}>
+                  {createError}
+                </div>
+              )}
+
+              <div className="create-form">
+                <div className="form-group">
+                  <label>Full Name <span style={{ color: '#ef4444' }}>*</span></label>
+                  <input
+                    type="text"
+                    placeholder="Enter full name (no numbers allowed)"
+                    value={createForm.name}
+                    onChange={(e) => handleNameChange(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Email Address <span style={{ color: '#ef4444' }}>*</span></label>
+                  <input
+                    type="email"
+                    placeholder="example@gmail.com"
+                    value={createForm.email}
+                    onChange={(e) => { setCreateForm({ ...createForm, email: e.target.value }); setCreateError(''); }}
+                    className={`form-input ${createForm.email && !isEmailValid(createForm.email) ? 'input-error' : ''}`}
+                  />
+                  {createForm.email && !isEmailValid(createForm.email) && (
+                    <span className="field-error">Valid domains: gmail, saveetha, yahoo, outlook</span>
+                  )}
+                </div>
+
+                <div className="form-group">
+                  <label>Password (optional – auto-generated if blank)</label>
+                  <input
+                    type="password"
+                    placeholder="••••••••"
+                    value={createForm.password}
+                    onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })}
+                    className="form-input"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Role</label>
+                  <div className="role-selector">
+                    {['Student', 'Teacher'].map(r => (
+                      <button
+                        key={r}
+                        type="button"
+                        className={`role-option ${createForm.role === r ? 'selected' : ''}`}
+                        onClick={() => setCreateForm({ ...createForm, role: r })}
+                      >
+                        {r}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>{createForm.role === 'Student' ? 'Grade/Class' : 'Subject Expertise'} <span style={{ color: '#ef4444' }}>*</span></label>
+                  <input
+                    type="text"
+                    placeholder={createForm.role === 'Student' ? 'e.g., 8' : 'e.g., Mathematics'}
+                    value={createForm.details}
+                    onChange={(e) => setCreateForm({ ...createForm, details: e.target.value })}
+                    className="form-input"
+                  />
+                </div>
+
+                {createForm.role === 'Teacher' && (
+                  <div className="form-group">
+                    <label>Assigned Grade <span style={{ color: '#ef4444' }}>*</span></label>
+                    <input
+                      type="text"
+                      placeholder="e.g., 8"
+                      value={createForm.grade}
+                      onChange={(e) => setCreateForm({ ...createForm, grade: e.target.value })}
+                      className="form-input"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="modal-actions-footer" style={{ gap: '12px' }}>
+                <button className="btn-web-outline" onClick={() => setShowCreateModal(false)} style={{ flex: 1 }}>Cancel</button>
+                <button
+                  className="btn-web-primary"
+                  onClick={handleCreateUser}
+                  disabled={creating || !createForm.name.trim() || !createForm.email.trim() || !isEmailValid(createForm.email)}
+                  style={{ flex: 1, opacity: creating ? 0.6 : 1 }}
+                >
+                  {creating ? 'Creating...' : 'Create User'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style>{`
         .admin-users-page { display: flex; flex-direction: column; gap: 32px; }
         
@@ -203,7 +387,11 @@ const AdminUsers = () => {
           justify-content: space-between;
           align-items: center;
           padding: 24px;
+          flex-wrap: wrap;
+          gap: 16px;
         }
+
+        .controls-right { display: flex; align-items: center; gap: 16px; }
 
         .admin-search-input {
           padding: 12px 20px;
@@ -228,6 +416,19 @@ const AdminUsers = () => {
         }
 
         .role-pill.active { background: #3b82f6; color: white; }
+
+        .add-user-btn {
+          background: var(--green-primary, #2e7d32);
+          color: white;
+          border: none;
+          padding: 10px 20px;
+          border-radius: 12px;
+          font-weight: 800;
+          font-size: 13px;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .add-user-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(46,125,50,0.2); }
 
         .users-table-container { padding: 0; overflow: hidden; }
         .admin-table { width: 100%; border-collapse: collapse; }
@@ -278,6 +479,31 @@ const AdminUsers = () => {
 
         .modal-actions-footer { display: flex; gap: 16px; padding-top: 24px; border-top: 1px solid #f1f5f9; }
         .modal-actions-footer button { flex: 1; }
+
+        /* Create User Form */
+        .create-form { display: flex; flex-direction: column; gap: 20px; margin-bottom: 24px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 13px; font-weight: 700; color: #475569; }
+        .form-input {
+          padding: 12px 16px; border-radius: 12px; border: 1px solid #e2e8f0;
+          font-size: 14px; transition: border-color 0.2s; outline: none;
+        }
+        .form-input:focus { border-color: var(--green-primary, #2e7d32); }
+        .form-input.input-error { border-color: #ef4444; }
+        .field-error { font-size: 12px; color: #ef4444; font-weight: 600; }
+
+        .role-selector { display: flex; gap: 12px; }
+        .role-option {
+          flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #e2e8f0;
+          background: white; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center;
+        }
+        .role-option.selected { border-color: var(--green-primary, #2e7d32); background: #f0fdf4; color: var(--green-primary, #2e7d32); }
+
+        .btn-web-primary {
+          background: var(--green-primary, #2e7d32); color: white; border: none;
+          padding: 14px 24px; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer;
+        }
+        .btn-web-primary:disabled { opacity: 0.5; cursor: not-allowed; }
       `}</style>
     </div>
   );

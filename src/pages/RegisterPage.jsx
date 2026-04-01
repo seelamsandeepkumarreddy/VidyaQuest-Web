@@ -121,7 +121,7 @@ const RegisterPage = () => {
                 className="vq-input" 
                 placeholder="Enter your full name" 
                 value={formData.fullName}
-                onChange={(e) => { setFormData({...formData, fullName: e.target.value}); setError(''); }}
+                onChange={(e) => { setFormData({...formData, fullName: e.target.value.replace(/[0-9]/g, '')}); setError(''); }}
                 required
               />
             </div>
