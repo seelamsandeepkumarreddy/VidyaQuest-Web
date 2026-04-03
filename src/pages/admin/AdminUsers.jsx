@@ -182,7 +182,9 @@ const AdminUsers = () => {
                 <td onClick={e => e.stopPropagation()}>
                    <div className="action-btns">
                       {u.status === 'pending' && <button onClick={() => approveUser(u.id)} className="btn-approve-mini">Approve</button>}
-                      <button onClick={() => deleteUser(u.id, u.name)} className="btn-delete-mini">Remove</button>
+                      {u.role?.toLowerCase() !== 'admin' && (
+                         <button onClick={() => deleteUser(u.id, u.name)} className="btn-delete-mini">Remove</button>
+                      )}
                    </div>
                 </td>
               </tr>

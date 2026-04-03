@@ -8,6 +8,7 @@ const LessonPage = () => {
   
   // Get PDF URL from state (passed from ChaptersPage) or fallback to default
   const pdfUrl = location.state?.pdfUrl || `/api/pdfs/chapter_${chapterId}.pdf`;
+  const isCompleted = location.state?.isCompleted || false;
 
   return (
     <div className="lesson-wrapper">
@@ -30,9 +31,13 @@ const LessonPage = () => {
           <div className="lesson-header-right">
             <button 
               className="btn-web-primary btn-start-quiz-now" 
-              onClick={() => navigate(`/chapters/${chapterId}/quiz`)}
+              onClick={() => {
+                if (!isCompleted) navigate(`/chapters/${chapterId}/quiz`);
+              }}
+              disabled={isCompleted}
+              style={isCompleted ? { opacity: 0.5, cursor: 'not-allowed', background: '#94a3b8' } : {}}
             >
-              Ready for Quiz?
+              {isCompleted ? 'Quiz Completed' : 'Ready for Quiz?'}
             </button>
           </div>
         </div>

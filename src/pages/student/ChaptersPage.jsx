@@ -157,13 +157,14 @@ const ChaptersPage = () => {
                         </div>
                         <div className="button-group-row">
                           <button 
-                            onClick={() => navigate(`/chapters/${chapter.id}/lesson`, { state: { pdfUrl: chapter.pdf_url } })}
+                            onClick={() => navigate(`/chapters/${chapter.id}/lesson`, { state: { pdfUrl: chapter.pdf_url, isCompleted } })}
                             className="vq-button btn-outline-sm"
                           >
                             Read Lesson
                           </button>
                           <button 
                             onClick={() => {
+                              if (isCompleted) return;
                               const subTitle = subject?.title || 'General';
                               sessionManager.setSubject(subTitle);
                               sessionManager.setChapterName(chapter.title);
@@ -176,8 +177,10 @@ const ChaptersPage = () => {
                               });
                             }}
                             className="vq-button btn-primary-sm"
+                            disabled={isCompleted}
+                            style={isCompleted ? { opacity: 0.5, cursor: 'not-allowed', background: '#94a3b8' } : {}}
                           >
-                            Take Quiz
+                            {isCompleted ? 'Quiz Completed' : 'Take Quiz'}
                           </button>
                         </div>
                       </div>

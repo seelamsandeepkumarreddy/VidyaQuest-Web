@@ -61,6 +61,10 @@ export const api = {
     method: 'POST',
     body: JSON.stringify({ email, password }),
   }),
+  changePassword: (data) => request('/change-password', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
 
   // Student Progress
   getProgress: (userId) => request(`/progress/${userId}`),

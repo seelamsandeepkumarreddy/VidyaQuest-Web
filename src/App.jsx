@@ -6,6 +6,7 @@ import SplashPage from './pages/SplashPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
 
 // Student Module Components
 import DashboardPage from './pages/student/DashboardPage';
@@ -54,6 +55,7 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/change-password" element={<ChangePasswordPage />} />
 
       {/* Student Protected Routes */}
       <Route element={

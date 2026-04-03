@@ -1,11 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sessionManager } from '../../utils/session';
+import { api } from '../../utils/api';
 
 const StudentHeader = () => {
   const navigate = useNavigate();
   const userName = sessionManager.getFullName();
   const grade = sessionManager.getGrade();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const userId = sessionManager.getUserId();
+        const role = sessionManager.getRole();
+        const data = await api.getAnnouncements(grade, userId, role);
+        const readIds = sessionManager.getReadNotificationIds();
+        if (Array.isArray(data)) {
+          const count = data.filter(a => !readIds.includes(a.id)).length;
+          setUnreadCount(count);
+        }
+      } catch (err) {
+        console.error('Failed to fetch unread count', err);
+      }
+    };
+    fetchUnreadCount();
+  }, [grade]);
 
   return (
     <header className="student-header">
@@ -23,7 +43,7 @@ const StudentHeader = () => {
         <div className="header-actions">
           <div className="action-item" onClick={() => navigate('/notifications')} title="Notifications">
             <span className="action-icon">🔔</span>
-            <span className="badge">3</span>
+            {unreadCount > 0 && <span className="badge">{unreadCount}</span>}
           </div>
           <div className="action-item" onClick={() => navigate('/chatbot')} title="AI Assistant">
             <span className="action-icon">🤖</span>
