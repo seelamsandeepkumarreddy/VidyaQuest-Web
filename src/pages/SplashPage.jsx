@@ -53,22 +53,6 @@ const SplashPage = () => {
             Get Started
           </button>
           
-          <div style={{ marginTop: '40px', display: 'flex', gap: '32px', opacity: 0.8 }}>
-            <div style={{ textAlign: 'center' }}>
-              <p style={{ margin: 0, fontWeight: '800', fontSize: '24px' }}>10k+</p>
-              <p style={{ margin: 0, fontSize: '11px', letterSpacing: '0.1em' }}>LEARNERS</p>
-            </div>
-            <div style={{ width: '1px', background: 'rgba(255,255,255,0.2)' }}></div>
-            <div style={{ textAlign: 'center' }}>
-              <p style={{ margin: 0, fontWeight: '800', fontSize: '24px' }}>500+</p>
-              <p style={{ margin: 0, fontSize: '11px', letterSpacing: '0.1em' }}>COURSES</p>
-            </div>
-            <div style={{ width: '1px', background: 'rgba(255,255,255,0.2)' }}></div>
-            <div style={{ textAlign: 'center' }}>
-              <p style={{ margin: 0, fontWeight: '800', fontSize: '24px' }}>50+</p>
-              <p style={{ margin: 0, fontSize: '11px', letterSpacing: '0.1em' }}>PARTNERS</p>
-            </div>
-          </div>
         </div>
       </div>
 

@@ -80,8 +80,6 @@ body {
 /* Global Layout Components */
 .app-container {
   width: 100%;
-  max-width: 1280px; /* Standard wide-screen max width */
-  margin: 0 auto;
   min-height: 100vh;
   background: white;
   position: relative;
